@@ -38,7 +38,7 @@ class Scene:
     def intersects(self, ray: Ray) -> Intersection:
         result = Intersection(hit=False, distance=math.inf)
         for intersection in [x.intersects(ray) for x in self.shapes]:
-            if intersection.hit and intersection.distance > result.distance:
+            if intersection.hit and intersection.distance < result.distance:
                 result = intersection
 
         return result
