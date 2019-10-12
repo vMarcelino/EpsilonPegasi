@@ -3,12 +3,13 @@ from epsilon_pegasi.helpers import enforced_dataclass
 from typing import List
 from enum import Enum
 import numpy as np
+typing_replaces = {np.ndarray: lambda x: np.array(x, dtype=float)}
 
 
-@enforced_dataclass
+@enforced_dataclass(replaces=typing_replaces)
 class Ray:
-    origin: np.array
-    direction: np.array
+    origin: np.ndarray
+    direction: np.ndarray
 
     def point(self, distance: float) -> np.ndarray:
         pass
@@ -34,21 +35,21 @@ class BSDF:
     color: Color3
 
 
-@enforced_dataclass
+@enforced_dataclass(replaces=typing_replaces)
 class ShaderGlobals:
-    point: np.array
-    normal: np.array
+    point: np.ndarray
+    normal: np.ndarray
     uv: np.ndarray
-    tangentU: np.array
-    tangentV: np.array
-    viewDirection: np.array
-    lighDirection: np.array
-    lightPoint: np.array
-    lighNormal: np.array
+    tangentU: np.ndarray
+    tangentV: np.ndarray
+    viewDirection: np.ndarray
+    lighDirection: np.ndarray
+    lightPoint: np.ndarray
+    lighNormal: np.ndarray
 
 
-@enforced_dataclass
+@enforced_dataclass(replaces=typing_replaces)
 class Vertex:
-    position: np.array
-    normal: np.array = np.array([0, 0])
-    uv: np.array = np.array([0, 0])
+    position: np.ndarray
+    normal: np.ndarray = np.array([0, 0])
+    uv: np.ndarray = np.array([0, 0])

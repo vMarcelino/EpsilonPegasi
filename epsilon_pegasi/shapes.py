@@ -7,6 +7,8 @@ from epsilon_pegasi.base_classes import BSDF, Vertex, Ray, ShaderGlobals
 from epsilon_pegasi.helpers import enforced_dataclass
 import math
 
+typing_replaces = {np.ndarray: lambda x: np.array(x, dtype=float)}
+
 
 class Shape:
     bsdf: BSDF
@@ -108,7 +110,7 @@ class Triangle(Shape):
             return Intersection(hit=False)
 
 
-@dataclass
+@enforced_dataclass(replaces=typing_replaces)
 class Sphere:
-    position: np.array
+    position: np.ndarray
     radius: float
