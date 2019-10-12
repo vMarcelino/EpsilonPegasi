@@ -7,12 +7,12 @@ import numpy as np
 
 def test_intersection():
     print('')
-    from epsilon_pegasi import Triangle, Vertex, Scene, Ray
+    from epsilon_pegasi import Triangle, Vertex, Scene, Ray, Intersection
     triangle = Triangle(vertices=[Vertex([0, -1, -1]), Vertex([0, 1, -1]), Vertex([0, 0, 1])])
     scene = Scene(shapes=[triangle])
     intersection = scene.intersects(Ray(origin=[-1, 0, 0], direction=[1, 0, 0]))
-    print(intersection)
-    assert True
+    i = Intersection(hit=True, distance=1, object_hit=triangle)
+    assert intersection == i
 
 
 if __name__ == "__main__":
