@@ -56,12 +56,12 @@ class Triangle(Shape):
         edge_2 = self.vertices[2].position - self.vertices[0].position
 
         # h = rayVector.crossProduct(edge2);
-        normal_of_edge_and_ray_direction_plane = np.cross(ray.direction, edge_2)
+        part_of_determinant_d_e2 = np.cross(ray.direction, edge_2)
 
         # a = edge1.dotProduct(h);
-        cosine_between_intersectionNormal_and_edge: float = np.dot(normal_of_edge_and_ray_direction_plane, edge_1)
+        determinant: float = np.dot(part_of_determinant_d_e2, edge_1)
 
-        is_ray_parallel = -EPSILON < cosine_between_intersectionNormal_and_edge < EPSILON
+        is_ray_parallel = -EPSILON < determinant < EPSILON  # det = 0: matrix is not inversible
         if is_ray_parallel:
             return Intersection(hit=False)
 
@@ -69,11 +69,10 @@ class Triangle(Shape):
         #f = 1 / cosine_between_intersectionNormal_and_edge
 
         # s = rayOrigin - vertex0;
-        vector_distance_ray_origin_to_vert0 = ray.origin - self.vertices[0].position
+        Tau = ray.origin - self.vertices[0].position
 
         # u = f * s.dotProduct(h);
-        u = vector_distance_ray_origin_to_vert0.dot(
-            normal_of_edge_and_ray_direction_plane) / cosine_between_intersectionNormal_and_edge
+        u = Tau.dot(part_of_determinant_d_e2) / determinant
 
         # if (u < 0.0 || u > 1.0)
         #     return false;
@@ -81,10 +80,10 @@ class Triangle(Shape):
             return Intersection(hit=False)
 
         # q = s.crossProduct(edge1);
-        q = np.cross(vector_distance_ray_origin_to_vert0, edge_1)
+        part_of_determinant_e1_tau = np.cross(Tau, edge_1)
 
         # v = f * rayVector.dotProduct(q);
-        v = ray.direction.dot(q) / cosine_between_intersectionNormal_and_edge
+        v = ray.direction.dot(part_of_determinant_e1_tau) / determinant
 
         # if (v < 0.0 || u + v > 1.0)
         #     return false;
@@ -93,7 +92,7 @@ class Triangle(Shape):
 
         # // At this stage we can compute t to find out where the intersection point is on the line.
         # float t = f * edge2.dotProduct(q);
-        scalar_distance = edge_2.dot(q) / cosine_between_intersectionNormal_and_edge
+        scalar_distance = edge_2.dot(part_of_determinant_e1_tau) / determinant
 
         # if (t > EPSILON && t < 1/EPSILON) // ray intersection
         # {
@@ -108,6 +107,13 @@ class Triangle(Shape):
         #     return false;
         else:
             return Intersection(hit=False)
+
+    def surfaceArea(self) -> float:
+        edge_1 = self.vertices[1].position - self.vertices[0].position
+        edge_2 = self.vertices[2].position - self.vertices[0].position
+
+        vectorial_product = np.cross(edge_1, edge_2)
+        return np.sqrt(vectorial_product.dot(vectorial_product))
 
 
 @enforced_dataclass(replaces=typing_replaces)
