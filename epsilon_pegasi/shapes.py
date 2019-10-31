@@ -50,6 +50,40 @@ class Scene:
 class Triangle(Shape):
     vertices: List[Vertex]
 
+    def _get_intersection_distance(self, origin, direction):
+        EPSILON = 0.0000001
+        edge_1 = self.vertices[1].position - self.vertices[0].position
+        edge_2 = self.vertices[2].position - self.vertices[0].position
+        part_of_determinant_d_e2 = np.cross(direction, edge_2)
+        determinant = np.dot(part_of_determinant_d_e2, edge_1)
+
+        is_ray_parallel = lambda d: -EPSILON < d < EPSILON 
+        is_ray_parallel = np.vectorize(is_ray_parallel)
+        np.where(is_ray_parallel(determinant), np.inf)
+
+        is_ray_parallel = -EPSILON < determinant < EPSILON 
+        if is_ray_parallel:
+            return Intersection(hit=False)
+
+
+
+        Tau = ray.origin - self.vertices[0].position
+        u = Tau.dot(part_of_determinant_d_e2) / determinant
+        if not (0 <= u <= 1):
+            return Intersection(hit=False)
+
+        part_of_determinant_e1_tau = np.cross(Tau, edge_1)
+        v = ray.direction.dot(part_of_determinant_e1_tau) / determinant
+        if v < 0 or u + v > 1:
+            return Intersection(hit=False)
+
+        scalar_distance = edge_2.dot(part_of_determinant_e1_tau) / determinant
+
+        if EPSILON < scalar_distance < (1 / EPSILON):
+            return Intersection(hit=True, distance=scalar_distance, object_hit=self)
+        else:
+            return Intersection(hit=False)
+
     def intersects(self, ray: Ray) -> Intersection:
         EPSILON = 0.0000001
         edge_1 = self.vertices[1].position - self.vertices[0].position
