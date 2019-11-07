@@ -74,9 +74,10 @@ class Renderer:
         return result
 
     def willerBrener_render(self) -> np.ndarray:
-        image = np.zeros((int(self.options.width), int(self.options.height), 3))
-        for i in range(self.options.width):
-            for j in range(self.options.height):
+        w, h = self.options.width, self.options.height
+        image = np.zeros((h, w, 3))
+        for i in range(h):
+            for j in range(w):
                 samples: np.ndarray = self.stratifiedSample(self.options.cameraSamples)
 
                 color = np.array([0, 0, 0], dtype=float)
@@ -84,7 +85,7 @@ class Renderer:
 
                 for k in range(self.options.cameraSamples):
                     sample = (samples[k] - [0.5, 0.5]) * self.options.filterWidth
-                    ray = self.camera.generateRay(i, j, sample)
+                    ray = self.camera.generateRay(j, i, sample)
                     weight = gaussian2D(sample, self.options.filterWidth)
 
                     color += self.trace(ray, 0) * weight
