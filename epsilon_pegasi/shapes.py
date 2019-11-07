@@ -57,15 +57,13 @@ class Triangle(Shape):
         part_of_determinant_d_e2 = np.cross(direction, edge_2)
         determinant = np.dot(part_of_determinant_d_e2, edge_1)
 
-        is_ray_parallel = lambda d: -EPSILON < d < EPSILON 
+        is_ray_parallel = lambda d: -EPSILON < d < EPSILON
         is_ray_parallel = np.vectorize(is_ray_parallel)
         np.where(is_ray_parallel(determinant), np.inf)
 
-        is_ray_parallel = -EPSILON < determinant < EPSILON 
+        is_ray_parallel = -EPSILON < determinant < EPSILON
         if is_ray_parallel:
             return Intersection(hit=False)
-
-
 
         Tau = ray.origin - self.vertices[0].position
         u = Tau.dot(part_of_determinant_d_e2) / determinant

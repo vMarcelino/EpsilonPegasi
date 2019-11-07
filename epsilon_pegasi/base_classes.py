@@ -15,13 +15,6 @@ class Ray:
         pass
 
 
-@dataclass
-class Color3:
-    r: int
-    g: int
-    b: int
-
-
 class BSDFType(Enum):
     light = 0
     diffuse = 1
@@ -32,7 +25,7 @@ class BSDFType(Enum):
 @dataclass
 class BSDF:
     type: BSDFType
-    color: Color3
+    color: np.ndarray
 
 
 @enforced_dataclass(replaces=typing_replaces)
