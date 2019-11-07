@@ -46,6 +46,7 @@ class Scene:
         return result
 
 
+
 @dataclass
 class Triangle(Shape):
     vertices: List[Vertex]
